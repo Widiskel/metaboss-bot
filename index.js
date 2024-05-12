@@ -200,7 +200,6 @@ Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
-${JSON.stringify(messages)}
     `,
       });
 
@@ -372,7 +371,7 @@ Attacking for ${event.bossInfo.currentHp} Times
               await getBossInfo(
                 true,
                 event.userData,
-                `-  (${event.bossInfo.currentHp - 1} Left)`
+                `- (${event.bossInfo.currentHp - 1} Left)`
               );
             }
 
