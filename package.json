@@ -1,0 +1,26 @@
+{
+  "name": "metaboss",
+  "version": "1.0.0",
+  "description": "Metaboss Bot",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Widiskel/metaboss-bot.git"
+  },
+  "keywords": [
+    "metaboss"
+  ],
+  "author": "Widiskel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Widiskel/metaboss-bot/issues"
+  },
+  "homepage": "https://github.com/Widiskel/metaboss-bot#readme",
+  "dependencies": {
+    "ws": "^8.17.0"
+  }
+}
