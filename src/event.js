@@ -19,7 +19,11 @@ function setBossInfo(data, attack = false) {
       bossInfo = data;
     }
   } else {
-    bossInfo = { maxHp: 100, currentHp: 0, remain: data.remain, type: 0 };
+    if (data.currentHp != undefined) {
+      bossInfo = data;
+    } else {
+      bossInfo = { maxHp: 100, currentHp: 0, remain: data.remain, type: 0 };
+    }
   }
 }
 
