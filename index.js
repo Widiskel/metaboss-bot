@@ -14,7 +14,7 @@ async function initWebSocket() {
     client = new WebSocket(socketUrl);
 
     client.on("open", () => {
-      console.log("");
+      // console.log("");
       twisters.put(1, {
         text: `
 Status : Connecting to metaboss web socket

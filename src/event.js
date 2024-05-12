@@ -23,7 +23,7 @@ function setUserData(data) {
 function setBossInfo(data, attack = false) {
   // console.log();
   // console.log(data);
-  console.log(bossInfo);
+  // console.log(bossInfo);
   // console.log(" ATTACKING : " + attack);
   if (attack) {
     // console.log("ATTACKING");
