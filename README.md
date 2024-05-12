@@ -16,5 +16,5 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 ## Set Up And Run
 
 - run `npm install`
-- open `account.js` and change account id with your account id, it support multiple account.
+- open `/src/account.js` and change account id with your account id, it support multiple account.
 - run `npm run start`
