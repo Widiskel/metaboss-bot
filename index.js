@@ -34,10 +34,10 @@ async function initWebSocket() {
 async function closeWebSocket() {
   if (client.readyState === WebSocket.OPEN) {
     console.log();
-    console.log("=======================");
+    console.log("===================================================");
     client.close();
     console.log("Web Socket Closed");
-    console.log("=======================");
+    console.log("===================================================");
     console.log();
   }
 }
@@ -125,11 +125,11 @@ async function startBot(idx) {
   try {
     var accountID = accountList[idx][0];
     await initWebSocket();
-    console.log("=====================================");
+    console.log("===================================================");
     console.log(
       "WebSocket initialized for account " + (idx + 1) + " (" + accountID + ")"
     );
-    console.log("=====================================");
+    console.log("===================================================");
     console.log();
 
     if (client.readyState == WebSocket.OPEN) {
