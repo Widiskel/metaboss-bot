@@ -15,8 +15,13 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 
 ## Set Up And Run
 
-- clone the project ```git clone https://github.com/Widiskel/metaboss-bot.git```
-- run ```cd metaboss-bot```
+- clone the project `git clone https://github.com/Widiskel/metaboss-bot.git`
+- run `cd metaboss-bot`
 - run `npm install`
 - open `/src/account.js` and change account id with your account id, it support multiple account.
 - run `npm run start`
+
+## Note
+
+if any error happen please do `npm update`.
+remember to not open telegram metaboss game while the bot running cause it may cause bot freeze.
