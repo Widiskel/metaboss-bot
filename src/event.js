@@ -23,11 +23,11 @@ function setUserData(data) {
 function setBossInfo(data, attack = false) {
   // console.log();
   // console.log(data);
-  // console.log(bossInfo);
+  console.log(bossInfo);
   // console.log(" ATTACKING : " + attack);
   if (attack) {
     // console.log("ATTACKING");
-    if (data.remain == 0) {
+    if (data.remain == 0 || data.remain == undefined) {
       bossInfo.currentHp = data.hpBoss;
     } else {
       bossInfo.currentHp = 0;

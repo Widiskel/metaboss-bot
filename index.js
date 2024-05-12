@@ -299,15 +299,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
               twisters.put(1, {
                 text: `
 Status : All accounts are in cooldown waiting for 5 Minutes
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
             `,
               });
               await delay(300000); // Wait for 5 minutes
