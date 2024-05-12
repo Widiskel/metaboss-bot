@@ -1,5 +1,3 @@
-import { account } from "./account.js";
-
 var missions = [];
 
 var bossInfo;
@@ -14,19 +12,23 @@ function setUserData(data) {
   userData = data;
 }
 function setBossInfo(data, attack = false) {
-  if (attack) {
-    bossInfo.currentHp = data.hpBoss;
+  if (data.remain != 0) {
+    if (attack) {
+      bossInfo.currentHp = data.hpBoss;
+    } else {
+      bossInfo = data;
+    }
   } else {
-    bossInfo = data;
+    bossInfo = { maxHp: 100, currentHp: 0, remain: data.remain, type: 0 };
   }
 }
 
-function getUserInfo() {
+function getUserInfo(accountID) {
   const jsonData = {
     code: 1,
     type: 2,
     data: {
-      id: account.id,
+      id: accountID,
       timeAuth: Math.floor(Date.now() / 1000),
     },
   };
