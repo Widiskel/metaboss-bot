@@ -1,9 +1,12 @@
 import WebSocket from "ws";
 import * as event from "./src/event.js";
 import { account } from "./src/account.js";
+import { Twisters } from "twisters";
 
 const socketUrl = "wss://api.metaboss.xyz:2000/game";
 var client = new WebSocket(socketUrl);
+const twisters = new Twisters();
+
 client.setMaxListeners(0);
 
 async function initWebSocket() {
@@ -11,7 +14,22 @@ async function initWebSocket() {
     client = new WebSocket(socketUrl);
 
     client.on("open", () => {
-      console.log("Connecting to metaboss web socket");
+      console.log("");
+      twisters.put(1, {
+        text: `
+Status : Connecting to metaboss web socket
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+      });
+
       client.ping();
     });
 
@@ -20,12 +38,40 @@ async function initWebSocket() {
     });
 
     client.on("ping", () => {
-      console.log("Received ping from server");
+      twisters.put(1, {
+        text: `
+Status : Received ping from server
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+      });
+
       client.pong();
     });
 
     client.on("pong", () => {
-      console.log("Received pong from server");
+      twisters.put(1, {
+        text: `
+Status : Received pong from server
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+      });
+
       resolve();
     });
   });
@@ -33,17 +79,39 @@ async function initWebSocket() {
 
 async function closeWebSocket() {
   if (client.readyState === WebSocket.OPEN) {
-    console.log();
-    console.log("===================================================");
-    client.close();
-    console.log("Web Socket Closed");
-    console.log("===================================================");
-    console.log();
+    twisters.put(1, {
+      text: `
+Status : Web Socket Closed
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+    });
   }
 }
 
 async function getUserInfo(accountID) {
-  console.log("Getting User Info Event");
+  twisters.put(1, {
+    text: `
+Status : Getting User Info Event
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+  });
+
   return new Promise((resolve, reject) => {
     client.send(event.getUserInfo(accountID));
     client.once("message", (wsMsg) => {
@@ -52,13 +120,23 @@ async function getUserInfo(accountID) {
       const data = messages.data;
 
       if (rc == 2) {
-        console.log("Username       : " + data.name);
-        console.log("Id             : " + data.id);
-        console.log("Total Misison  : " + data.mission.length);
+        twisters.put(1, {
+          text: `
+Status : Running on - Account ${accountID}
+
+USER DATA 
+Username       : ${data.name}
+Id             : ${data.id}
+Total Misison  : ${data.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+      `,
+        });
 
         event.setUserData(data);
         event.setMission(data.mission);
-        console.log();
 
         resolve();
       } else {
@@ -68,33 +146,63 @@ async function getUserInfo(accountID) {
   });
 }
 
-async function getBossInfo(attack = false) {
+async function getBossInfo(attack = false, userData, msg = "") {
   return new Promise((resolve) => {
     if (attack) {
-      console.log("Attack");
+      twisters.put(1, {
+        text: `
+Status : Attacking ${msg}
+
+USER DATA 
+Username       : ${userData.name}
+Id             : ${userData.id}
+Total Misison  : ${userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+    `,
+      });
       client.send(event.attackBoss());
     } else {
       client.send(event.getBossInfo());
-      console.log("Getting Boss Info Event");
+      twisters.put(1, {
+        text: `
+Status : Getting Boss Info Event
+
+Username       : ${userData.name}
+Id             : ${userData.id}
+Total Misison  : ${userData.mission.length}
+    `,
+      });
     }
 
     client.once("message", (wsMsg) => {
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
-      console.log(messages);
+      // console.log(messages);
 
       if (rc == 404) {
         resolve();
       }
       event.setBossInfo(data, attack);
-      console.log("Boss Max HP   : " + event.bossInfo.maxHp);
-      console.log("Current HP    : " + event.bossInfo.currentHp);
-      console.log(
-        "Colldown      : " +
-          millisecondsToHoursAndMinutes(event.bossInfo.remain)
-      );
-      console.log();
+      twisters.put(1, {
+        text: `
+Status : ${attack ? `Attacking ${msg}` : "Getting Boss Info Event"}
+
+USER DATA 
+Username       : ${userData.name}
+Id             : ${userData.id}
+Total Misison  : ${userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+
+${JSON.stringify(messages)}
+    `,
+      });
 
       if (attack) {
         setInterval(() => resolve(), 1500);
@@ -120,28 +228,67 @@ function millisecondsToHoursAndMinutes(milliseconds) {
 }
 
 async function startBot(idx) {
-  console.log();
-  console.log("Running Bot for Account : " + (idx + 1));
+  twisters.put(1, {
+    text: `
+Status : Running Bot for Account : ${idx + 1}
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+  });
   try {
     var accountID = accountList[idx][0];
     await initWebSocket();
-    console.log("===================================================");
-    console.log(
-      "WebSocket initialized for account " + (idx + 1) + " (" + accountID + ")"
-    );
-    console.log("===================================================");
-    console.log();
+
+    twisters.put(1, {
+      text: `
+Status : WebSocket initialized for account ${idx + 1} (${accountID})
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+  `,
+    });
 
     if (client.readyState == WebSocket.OPEN) {
       await getUserInfo(accountID);
       if (event.userData != undefined) {
-        await getBossInfo();
+        await getBossInfo(false, event.userData);
         if (event.bossInfo != undefined) {
           if (event.bossInfo.remain != 0) {
             console.log(
-              "Boss now in cooldown, Waiting for " +
+              "Account " +
+                accountID +
+                " In cooldown for " +
                 millisecondsToHoursAndMinutes(event.bossInfo.remain)
             );
+            twisters.put(1, {
+              text: `
+Status : Boss now in cooldown, Waiting for ${millisecondsToHoursAndMinutes(
+                event.bossInfo.remain
+              )}
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+          `,
+            });
+
             // Update account status to true
             accountList[idx][1] = true;
             var nextIdx = accountList.findIndex(
@@ -149,49 +296,166 @@ async function startBot(idx) {
             );
             await closeWebSocket();
             if (nextIdx == -1) {
-              console.log("All accounts are in cooldown waiting for 5 Minutes");
+              twisters.put(1, {
+                text: `
+Status : All accounts are in cooldown waiting for 5 Minutes
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+            `,
+              });
               await delay(300000); // Wait for 5 minutes
-              console.log("Restarting with the first account");
+              twisters.put(1, {
+                text: `
+Status : Restarting with the first account
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+            `,
+              });
+
               await startBot(0);
             } else {
-              console.log("Restarting with the next account " + nextIdx);
+              twisters.put(1, {
+                text: `
+Status : Restarting with the next account - ${nextIdx}
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+            `,
+              });
+
               await startBot(nextIdx);
             }
           } else {
             accountList[idx][1] = false;
-            console.log(
-              "Boss Currently have " + event.bossInfo.currentHp + " HP"
-            );
-            console.log(
-              "Attacking for " + (event.bossInfo.currentHp - 3) + " Times"
-            );
-            let i = 0;
+            twisters.put(1, {
+              text: `
+Status : Boss Currently have ${event.bossInfo.currentHp} HP
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+
+Attacking for ${event.bossInfo.currentHp} Times
+          `,
+            });
             while (event.bossInfo.currentHp != 0) {
-              console.log(
-                "Attacking Boss " +
-                  (i + 1) +
-                  " (" +
-                  (event.bossInfo.currentHp - 1) +
-                  " Left )"
+              twisters.put(1, {
+                text: `
+  Status : Attacking Bos - (${event.bossInfo.currentHp - 1} Left)
+  
+  USER DATA 
+  Username       : ${event.userData.name}
+  Id             : ${event.userData.id}
+  Total Misison  : ${event.userData.mission.length}
+  
+  Boss Max HP    : ${event.bossInfo.maxHp}
+  Current HP     : ${event.bossInfo.currentHp}
+  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+            `,
+              });
+              await getBossInfo(
+                true,
+                event.userData,
+                `-  (${event.bossInfo.currentHp - 1} Left)`
               );
-              await getBossInfo(true);
-              i++;
             }
-            console.log("Boss HP now " + event.bossInfo.currentHp + " HP");
-            console.log("Restarting with the same account");
+
+            twisters.put(1, {
+              text: `
+Status : Boss HP now ${event.bossInfo.currentHp} HP
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+
+Restarting with the same account
+          `,
+            });
             await startBot(idx); // Restart with the same account
           }
         }
       } else {
-        console.log("Restarting with the same account");
-        await startBot(idx); // Restart with the same account
+        console.log("ERROR - Undefined User");
+        twisters.put(1, {
+          text: `
+Status : Restarting with the same account - Undefined User Info
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+      `,
+        });
+        await startBot(idx);
       }
     } else {
-      console.log("Restarting with the same account");
+      console.log("ERROR - Socket Not Ready");
+      twisters.put(1, {
+        text: `
+Status : Restarting with the same account - Socket Not Ready
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+    `,
+      });
       await startBot(idx);
     }
   } catch (error) {
-    console.error("An error occurred:", error);
+    console.log("ERROR " + error);
+    twisters.put(1, {
+      text: `
+  Status : Restarting with the same account - error occurred ${error}
+
+  USER DATA
+  Username       : ${event.userData.name}
+  Id             : ${event.userData.id}
+  Total Misison  : ${event.userData.mission.length}
+
+  Boss Max HP    : ${event.bossInfo.maxHp}
+  Current HP     : ${event.bossInfo.currentHp}
+  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+    `,
+    });
     await startBot(idx);
   }
 }

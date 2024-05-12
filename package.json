@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Widiskel/metaboss-bot#readme",
   "dependencies": {
+    "twisters": "^1.1.0",
     "ws": "^8.17.0"
   }
 }

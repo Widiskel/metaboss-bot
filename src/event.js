@@ -1,8 +1,17 @@
 var missions = [];
 
-var bossInfo;
+var bossInfo = {
+  maxHp: 100,
+  currentHp: 0,
+  remain: 0,
+  type: 0,
+};
 
-var userData;
+var userData = {
+  name: undefined,
+  id: undefined,
+  mission: [],
+};
 
 function setMission(data) {
   missions = data;
@@ -12,16 +21,24 @@ function setUserData(data) {
   userData = data;
 }
 function setBossInfo(data, attack = false) {
-  if (data.remain != 0) {
-    if (attack) {
+  // console.log();
+  // console.log(data);
+  // console.log(bossInfo);
+  // console.log(" ATTACKING : " + attack);
+  if (attack) {
+    // console.log("ATTACKING");
+    if (data.remain == 0) {
       bossInfo.currentHp = data.hpBoss;
     } else {
-      bossInfo = data;
+      bossInfo.currentHp = 0;
     }
   } else {
-    if (data.currentHp != undefined) {
+    // console.log("NOT ATTACKING");
+    if (data.remain == 0) {
+      // console.log("NOT ATTACKING - NOT REMAINING");
       bossInfo = data;
     } else {
+      // console.log("NOT ATTACKING - REMAINING");
       bossInfo = { maxHp: 100, currentHp: 0, remain: data.remain, type: 0 };
     }
   }
