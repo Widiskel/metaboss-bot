@@ -146,6 +146,65 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   });
 }
 
+async function claimBossChest(accountID) {
+  twisters.put(1, {
+    text: `
+  Status : Getting Chess Info Event
+  
+  USER DATA 
+  Username       : ${event.userData.name}
+  Id             : ${event.userData.id}
+  Total Misison  : ${event.userData.mission.length}
+  
+  Boss Max HP    : ${event.bossInfo.maxHp}
+  Current HP     : ${event.bossInfo.currentHp}
+  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+  `,
+  });
+
+  return new Promise((resolve) => {
+    client.send(event.claimBossChest());
+    client.once("message", async (wsMsg) => {
+      const messages = JSON.parse(wsMsg.toString("utf8"));
+      const rc = messages.code;
+      const data = messages.data;
+      // console.log(messages);
+
+      if (rc == 12) {
+        console.log(
+          `Successfully claimed chest for Account ${accountID} got => ${
+            data.number
+          } ${data.type == 1 ? "MTB" : "TON"}`
+        );
+      }
+
+      if (rc == 10 || rc == 1000 || data.message == "Not enough this item !") {
+        console.log("All Boss chest claimed for account " + accountID);
+        twisters.put(1, {
+          text: `
+  Status : All Chest Claimed for Account ${accountID}
+  
+  USER DATA 
+  Username       : ${event.userData.name}
+  Id             : ${event.userData.id}
+  Total Misison  : ${event.userData.mission.length}
+  
+  Boss Max HP    : ${event.bossInfo.maxHp}
+  Current HP     : ${event.bossInfo.currentHp}
+  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+
+  Continue action
+        `,
+        });
+
+        resolve();
+      } else {
+        await claimBossChest();
+      }
+    });
+  });
+}
+
 async function getBossInfo(attack = false, userData, msg = "") {
   return new Promise((resolve) => {
     if (attack) {
@@ -274,20 +333,18 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
             );
             twisters.put(1, {
               text: `
-Status : Boss now in cooldown, Waiting for ${millisecondsToHoursAndMinutes(
-                event.bossInfo.remain
-              )}
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-          `,
+        Status : Boss now in cooldown, Waiting for ${millisecondsToHoursAndMinutes(
+          event.bossInfo.remain
+        )}
+        USER DATA
+        Username       : ${event.userData.name}
+        Id             : ${event.userData.id}
+        Total Misison  : ${event.userData.mission.length}
+        Boss Max HP    : ${event.bossInfo.maxHp}
+        Current HP     : ${event.bossInfo.currentHp}
+        Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+                  `,
             });
-
             // Update account status to true
             accountList[idx][1] = true;
             var nextIdx = accountList.findIndex(
@@ -297,76 +354,69 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
             if (nextIdx == -1) {
               twisters.put(1, {
                 text: `
-Status : All accounts are in cooldown waiting for 5 Minutes
-            `,
+        Status : All accounts are in cooldown waiting for 5 Minutes
+                    `,
               });
               await delay(300000); // Wait for 5 minutes
               twisters.put(1, {
                 text: `
-Status : Restarting with the first account
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-            `,
+        Status : Restarting with the first account
+        USER DATA
+        Username       : ${event.userData.name}
+        Id             : ${event.userData.id}
+        Total Misison  : ${event.userData.mission.length}
+        Boss Max HP    : ${event.bossInfo.maxHp}
+        Current HP     : ${event.bossInfo.currentHp}
+        Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+                    `,
               });
-
               await startBot(0);
             } else {
               twisters.put(1, {
                 text: `
-Status : Restarting with the next account - ${nextIdx}
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-            `,
+        Status : Restarting with the next account - ${nextIdx}
+        USER DATA
+        Username       : ${event.userData.name}
+        Id             : ${event.userData.id}
+        Total Misison  : ${event.userData.mission.length}
+        Boss Max HP    : ${event.bossInfo.maxHp}
+        Current HP     : ${event.bossInfo.currentHp}
+        Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+                    `,
               });
-
               await startBot(nextIdx);
             }
           } else {
             accountList[idx][1] = false;
             twisters.put(1, {
               text: `
-Status : Boss Currently have ${event.bossInfo.currentHp} HP
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-
-Attacking for ${event.bossInfo.currentHp} Times
-          `,
+        Status : Boss Currently have ${event.bossInfo.currentHp} HP
+        USER DATA
+        Username       : ${event.userData.name}
+        Id             : ${event.userData.id}
+        Total Misison  : ${event.userData.mission.length}
+        Boss Max HP    : ${event.bossInfo.maxHp}
+        Current HP     : ${event.bossInfo.currentHp}
+        Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+        Attacking for ${event.bossInfo.currentHp} Times
+                  `,
             });
             while (event.bossInfo.currentHp != 0) {
               twisters.put(1, {
                 text: `
-  Status : Attacking Bos - (${event.bossInfo.currentHp - 1} Left)
-  
-  USER DATA 
-  Username       : ${event.userData.name}
-  Id             : ${event.userData.id}
-  Total Misison  : ${event.userData.mission.length}
-  
-  Boss Max HP    : ${event.bossInfo.maxHp}
-  Current HP     : ${event.bossInfo.currentHp}
-  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-            `,
+          Status : Attacking Bos - (${event.bossInfo.currentHp - 1} Left)
+
+          USER DATA
+          Username       : ${event.userData.name}
+          Id             : ${event.userData.id}
+          Total Misison  : ${event.userData.mission.length}
+
+          Boss Max HP    : ${event.bossInfo.maxHp}
+          Current HP     : ${event.bossInfo.currentHp}
+          Colldown       : ${millisecondsToHoursAndMinutes(
+            event.bossInfo.remain
+          )}
+                    `,
               });
               await getBossInfo(
                 true,
@@ -374,23 +424,24 @@ Attacking for ${event.bossInfo.currentHp} Times
                 `- (${event.bossInfo.currentHp - 1} Left)`
               );
             }
-
             twisters.put(1, {
               text: `
-Status : Boss HP now ${event.bossInfo.currentHp} HP
+        Status : Boss HP now ${event.bossInfo.currentHp} HP
 
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
+        USER DATA
+        Username       : ${event.userData.name}
+        Id             : ${event.userData.id}
+        Total Misison  : ${event.userData.mission.length}
+        
+        Boss Max HP    : ${event.bossInfo.maxHp}
+        Current HP     : ${event.bossInfo.currentHp}
+        Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-
-Restarting with the same account
-          `,
+        Claiming Chest
+                  `,
             });
+            await claimBossChest(accountID);
+            await delay(5000); //delay 5 second;
             await startBot(idx); // Restart with the same account
           }
         }
