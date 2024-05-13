@@ -118,7 +118,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
-      console.log(messages);
+      // console.log(messages);
 
       if (rc == 2) {
         twisters.put(1, {
