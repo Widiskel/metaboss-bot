@@ -331,7 +331,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       if (event.userData != undefined) {
         await getBossInfo(false);
         if (event.bossInfo != undefined) {
-          console.log("Checking Account" + accountID);
+          console.log("Checking Account " + accountID);
           if (event.bossInfo.remain != 0) {
             console.log(
               "Account " +
@@ -352,6 +352,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 Status : All accounts are in cooldown waiting for 5 Minutes
                     `,
               });
+              console.log();
               await delay(300000); // Wait for 5 minutes
               twisters.put(1, {
                 text: `
