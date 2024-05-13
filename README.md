@@ -23,7 +23,7 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 
 ## How To Update
 
-- run `git pull --rebase`
+- run `git pull`
 - run `npm update`
 - run the bot again `npm run start`
 
