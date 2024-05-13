@@ -331,6 +331,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       if (event.userData != undefined) {
         await getBossInfo(false);
         if (event.bossInfo != undefined) {
+          console.log("Checking Account" + accountID);
           if (event.bossInfo.remain != 0) {
             console.log(
               "Account " +
@@ -338,21 +339,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                 " In cooldown for " +
                 millisecondsToHoursAndMinutes(event.bossInfo.remain)
             );
-            twisters.put(1, {
-              text: `
-Status : Boss now in cooldown, Waiting for ${millisecondsToHoursAndMinutes(
-                event.bossInfo.remain
-              )}
-USER DATA
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
 
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-                  `,
-            });
             // Update account status to true
             accountList[idx][1] = true;
             var nextIdx = accountList.findIndex(
@@ -380,6 +367,7 @@ Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                     `,
               });
+              accountList = account.map((item) => [item, false]);
               await startBot(0);
             } else {
               twisters.put(1, {
@@ -399,6 +387,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
               await startBot(nextIdx);
             }
           } else {
+            console.log("Use Account " + accountID);
             accountList[idx][1] = false;
             twisters.put(1, {
               text: `
