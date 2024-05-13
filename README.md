@@ -38,5 +38,7 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 
 ## Note
 
-if any error happen please do `npm update`.
+if any error happen please check [HERE](https://github.com/Widiskel/metaboss-bot)
+check the commit if any new commit, then update the bot.
+
 remember to not open telegram metaboss game while the bot running cause it may cause bot freeze.
