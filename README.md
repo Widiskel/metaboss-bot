@@ -21,12 +21,14 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 - open `/src/account.js` and change account id and username with your account id and username/display name that showed in game, it support multiple account. example
 
 ```json
+
 const account = [
   [123123123, "USERNAME"], //account 1
   [123123123, "USERNAME"], //account 2
   [123123123, ""], //account 3 NO USERNAME
   [123123123, ""], //account 4 NO USERNAME
 ];
+
 ```
 
 - run `npm run start`
