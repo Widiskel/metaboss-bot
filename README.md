@@ -1,6 +1,6 @@
 # METABOSS BOT
 
-Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on telegram than run on TON chain.
+Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on telegram that run on TON chain.
 
 ## Prerequisite
 
