@@ -27,13 +27,12 @@ Since metaboss team add more security to the app, botting is not easy like befor
 
 - Now open Metaboss Webview game on your Telegram Desktop.
 - On the Webview window right click > inspect (on Windows) or open Safari > Develop > Your Device > Telegram (on Mac)
-- On Inspect Element or Developer Tools > go to Network tab > find Game socket
-  ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/image3.png)
+- On Inspect Element or Developer Tools > go to Network tab > find the game socket
 - Now refresh the Metaboss Webview on your Telegram Desktop.
-- You will see something like this
-
+- Back to Developer Tools > Network tab > game socket You will see something like this
+  ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/image3.png)
 - Copy the data that contains your account data
-- now open `account.js` and fill up your data using template data provided
+- Now open `account.js` and fill up your data using template data provided
 
 ```js
 const account = [
@@ -45,7 +44,7 @@ const account = [
       username: "X",
       hash: "X",
       timeAuth: "X",
-      data: "X",
+      data: "user={"id":11111XXXXXXXX...etc",
     },
   }, //account 1
 ];
