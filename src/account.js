@@ -1,8 +1,15 @@
 const account = [
-  [123123123, "Account Name"], //account 1
-  [123123123, "Account Name"], //account 2
-  [123123123, "Account Name"], //account 3
-  [123123123, "Account Name"], //account 4
+  {
+    code: "X",
+    type: "X",
+    data: {
+      id: "X",
+      username: "X",
+      hash: "X",
+      timeAuth: "X",
+      data: "X",
+    },
+  }, //account 1
 ];
 
 export { account };

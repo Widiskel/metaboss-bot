@@ -15,20 +15,44 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 
 ## Set Up And Run
 
-- clone the project `git clone https://github.com/Widiskel/metaboss-bot.git`
-- run `cd metaboss-bot`
-- run `npm install`
-- open `/src/account.js` and change account id and username with your account id and username/display name that showed in game, it support multiple account. example
-![image](https://github.com/Widiskel/metaboss-bot/assets/97203329/a013ee88-532a-4299-a209-544eb56fef58)
+- clone the project `git clone https://github.com/Widiskel/metaboss-bot.git`.
+- run `cd metaboss-bot`.
+- run `npm install`.
 
-```json
-  [123123123, "USERNAME NAME"], //account 1
-  [123123123, "USERNAME"], //account 2
-  [123123123, ""], //account 3 NO USERNAME
-  [123123123, ""], //account 4 NO USERNAME
+Since metaboss team add more security to the app, botting is not easy like before, here i will tell you how to run the bot
+
+- Install [Telegram Desktop](https://desktop.telegram.org/).
+- Go to Settings > Advance > Experimental Settings > And enable Webview inspecting.
+
+  Also read how to do inspect on your Operating system.
+
+- Now open Metaboss Webview game on your Telegram Desktop.
+- On the Webview window right click > inspect (on Windows) or open Safari > Develop > Your Device > Telegram (on Mac)
+- On Inspect Element or Developer Tools > go to Network tab > find Game socket
+
+- Now refresh the Metaboss Webview on your Telegram Desktop.
+- You will see something like this
+
+- Copy the data that contains your account data
+- now open `account.js` and fill up your data using template data provided
+
+```js
+const account = [
+  {
+    code: "X",
+    type: "X",
+    data: {
+      id: "X",
+      username: "X",
+      hash: "X",
+      timeAuth: "X",
+      data: "X",
+    },
+  }, //account 1
+];
 ```
 
-- run `npm run start`
+- Finnally run `npm run start`
 
 ## How To Update
 

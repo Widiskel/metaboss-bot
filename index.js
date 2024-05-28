@@ -96,7 +96,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   }
 }
 
-async function getUserInfo(accountID, userName) {
+async function getUserInfo(userData, accountID) {
   twisters.put(1, {
     text: `
 Status : Getting User Info Event
@@ -113,7 +113,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   });
 
   return new Promise((resolve, reject) => {
-    client.send(event.getUserInfo(accountID, userName));
+    client.send(event.getUserInfo(userData));
     client.once("message", (wsMsg) => {
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
@@ -307,8 +307,8 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
   });
   try {
-    var accountID = accountList[idx][0][0];
-    var userName = accountList[idx][0][1];
+    var userData = accountList[idx][0];
+    var accountID = accountList[idx][0].data.id;
     await initWebSocket();
 
     twisters.put(1, {
@@ -327,7 +327,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
     });
 
     if (client.readyState == WebSocket.OPEN) {
-      await getUserInfo(accountID, userName);
+      await getUserInfo(userData, accountID);
       if (event.userData != undefined) {
         await getBossInfo(false);
         if (event.bossInfo != undefined) {

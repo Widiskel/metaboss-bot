@@ -36,18 +36,9 @@ function setBossInfo(data, attack = false) {
     }
   }
 }
-function getUserInfo(accountID, userName) {
-  const jsonData = {
-    code: 1,
-    type: 2,
-    data: {
-      id: accountID,
-      username: userName,
-      hash: "xxx",
-      timeAuth: Math.floor(Date.now() / 1000),
-    },
-  };
-  return JSON.stringify(jsonData);
+function getUserInfo(userData) {
+  // console.log(userData);
+  return JSON.stringify(userData);
 }
 
 function claimBossChest() {
