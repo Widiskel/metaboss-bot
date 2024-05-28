@@ -20,10 +20,9 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 - run `npm install`.
 
 Since metaboss team add more security to the app, botting is not easy like before, here i will tell you how to run the bot
-
 - Install [Telegram Desktop](https://desktop.telegram.org/).
 - Go to Settings > Advance > Experimental Settings > And enable Webview inspecting.
-
+  ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/image2.png)
   Also read how to do inspect on your Operating system.
 
 - Now open Metaboss Webview game on your Telegram Desktop.
