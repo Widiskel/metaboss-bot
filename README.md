@@ -31,7 +31,7 @@ Since metaboss team add more security to the app, botting is not easy like befor
 - On Inspect Element or Developer Tools > go to Network tab > find the game socket
 - Now refresh the Metaboss Webview on your Telegram Desktop.
 - Back to Developer Tools > Network tab > game socket You will see something like this
-  ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/image3.png)
+  ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/gamesocket.png)
 - Copy the data that contains your account data
 - Now open `account.js` and fill up your data using template data provided
 
