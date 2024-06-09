@@ -20,20 +20,20 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 - run `npm install`.
 
 Since metaboss team add more security to the app, botting is not easy like before, here i will tell you how to run the bot
-- Install [Telegram Desktop](https://desktop.telegram.org/).
-- Go to Settings > Advance > Experimental Settings > And enable Webview inspecting.
+1. Install [Telegram Desktop](https://desktop.telegram.org/).
+2. Go to Settings > Advance > Experimental Settings > And enable Webview inspecting.
   ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/image2.png)
   
   Also read how to do inspect on your Operating system.
 
-- Now open Metaboss Webview game on your Telegram Desktop.
-- On the Webview window right click > inspect (on Windows) or open Safari > Develop > Your Device > Telegram (on Mac)
-- On Inspect Element or Developer Tools > go to Network tab > find the game socket
-- Now refresh the Metaboss Webview on your Telegram Desktop.
-- Back to Developer Tools > Network tab > game socket You will see something like this
+3. Now open Metaboss Webview game on your Telegram Desktop.
+4. On the Webview window right click > inspect (on Windows) or open Safari > Develop > Your Device > Telegram (on Mac)
+5. On Inspect Element or Developer Tools > go to Network tab > find the game socket
+6. Now refresh the Metaboss Webview on your Telegram Desktop.
+7. Back to Developer Tools > Network tab > game socket You will see something like this
   ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/gamesocket.png)
-- Copy the data that contains your account data
-- Now open `account.js` and fill up your data using template data provided
+8. Copy the data that contains your account data
+9. Now open `account.js` and fill up your data using template data provided
 
 ```js
 const account = [
@@ -51,7 +51,7 @@ const account = [
 ];
 ```
 
-- Finnally run `npm run start`
+10. Finnally run `npm run start`
 
 ## How To Update
 
@@ -60,6 +60,7 @@ const account = [
 - run the bot again `npm run start`
 
 ## Note
+The account data can be expired, because it have ```hash``` and ```timeAuth```, so if your run the bot and your username and id is undefined, you need to get new account data. follow the ## Set Up And Run from no 3
 
 if any error happen please check [HERE](https://github.com/Widiskel/metaboss-bot)
 check the commit if any new commit, then update the bot.
