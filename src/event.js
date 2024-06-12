@@ -13,12 +13,23 @@ var userData = {
   mission: [],
 };
 
+var miningData = {
+  timeConst: undefined,
+  timeEndMining: undefined,
+  mineType: 3, //GOLD MINING
+  timeRemaining: undefined,
+};
+
 function setMission(data) {
   missions = data;
 }
 
 function setUserData(data) {
   userData = data;
+}
+
+function setMiningData(data) {
+  miningData = data;
 }
 
 function setBossInfo(data, attack = false) {
@@ -52,6 +63,13 @@ function claimBossChest() {
 function getBossInfo() {
   return JSON.stringify({ code: 1, type: 7, data: {} });
 }
+function startMining(type) {
+  return JSON.stringify({
+    code: 1,
+    type: 45,
+    data: { mineType: type },
+  });
+}
 
 function attackBoss() {
   return JSON.stringify({ code: 1, type: 3, data: {} });
@@ -61,11 +79,14 @@ export {
   missions,
   bossInfo,
   userData,
+  miningData,
   setUserData,
   setMission,
   claimBossChest,
   getUserInfo,
   getBossInfo,
+  startMining,
   setBossInfo,
   attackBoss,
+  setMiningData,
 };
