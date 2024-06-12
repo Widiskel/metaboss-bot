@@ -103,8 +103,8 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   });
 
   return new Promise(async (resolve, reject) => {
-    client.send(event.getUserInfo(userData));
-    client.once("message", async (wsMsg) => {
+    await client.send(event.getUserInfo(userData));
+    await client.once("message", async (wsMsg) => {
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
@@ -132,7 +132,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
         reject(new Error("Received unexpected response" + data));
       }
     });
-    await setTimeout(resolve, 1000);
+    await setTimeout(resolve, 3000);
   });
 }
 
@@ -152,9 +152,9 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   `,
   });
 
-  return new Promise((resolve) => {
-    client.send(event.claimBossChest());
-    client.once("message", (wsMsg) => {
+  return new Promise(async (resolve) => {
+    await client.send(event.claimBossChest());
+    await client.once("message", (wsMsg) => {
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
@@ -211,9 +211,9 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   `,
   });
 
-  return new Promise((resolve) => {
-    client.send(event.startMining(random()));
-    client.once("message", (wsMsg) => {
+  return new Promise(async (resolve) => {
+    await client.send(event.startMining(random()));
+    await client.once("message", (wsMsg) => {
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
@@ -241,7 +241,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 }
 
 async function getBossInfo(attack = false, msg = "") {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     if (attack) {
       twisters.put(1, {
         text: `
@@ -257,9 +257,9 @@ Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
     `,
       });
-      client.send(event.attackBoss());
+      await client.send(event.attackBoss());
     } else {
-      client.send(event.getBossInfo());
+      await client.send(event.getBossInfo());
       twisters.put(1, {
         text: `
 Status : Getting Boss Info Event
