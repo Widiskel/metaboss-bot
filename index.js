@@ -129,7 +129,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
         event.setUserData(data);
         event.setMission(data.mission);
-        setTimeout(resolve, 1000);
+        resolve();
       } else {
         reject(new Error("Received unexpected response" + data));
       }
@@ -236,7 +236,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       } else {
         console.log("Failed to start mining, Mining not unlocked");
       }
-      setTimeout(resolve, 1000);
+      resolve();
     });
   });
 }
