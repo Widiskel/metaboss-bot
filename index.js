@@ -81,12 +81,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   });
 }
 
-async function closeWebSocket() {
-  if (client.readyState === WebSocket.OPEN) {
-    client.close();
-  }
-}
-
 async function getUserInfo(userData, accountID) {
   twisters.put(1, {
     text: `
@@ -381,9 +375,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                       console.log();
                       // Update account status to true
                       accountList[idx][1] = true;
-
-                      await closeWebSocket();
-
+                      await client.close();
                       resolve();
                     } else {
                       accountList[idx][1] = false;
