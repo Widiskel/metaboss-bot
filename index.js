@@ -128,7 +128,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
         event.setUserData(data);
         event.setMission(data.mission);
-        await setTimeout(resolve, 3000);
+        setTimeout(resolve, 1000);
       } else {
         reject(new Error("Received unexpected response" + data));
       }
@@ -326,7 +326,7 @@ function millisecondsToHoursAndMinutes(milliseconds) {
 }
 
 async function startBot(acc) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     const idx = accountList.indexOf(acc);
 
     twisters.put(1, {
@@ -383,7 +383,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
                       await closeWebSocket();
 
-                      await setTimeout(resolve, 3000);
+                      resolve();
                     } else {
                       accountList[idx][1] = false;
                       twisters.put(1, {
@@ -438,7 +438,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                         `,
                       });
                       await claimBossChest(accountID);
-                      await delay(3000); //delay 3 second;
+                      await delay(1000); //delay 3 second;
                       await startBot(acc); // Restart with the same account
                     }
                   })
@@ -471,7 +471,7 @@ async function initBot() {
     console.log("Using Account " + acc[0].data.id);
     await startBot(acc);
     console.log();
-    await delay(3000);
+    await delay(1000);
   }
   twisters.put(1, {
     text: `
