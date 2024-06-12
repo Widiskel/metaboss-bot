@@ -13,6 +13,7 @@ function random(min = 1, max = 3) {
 }
 
 async function initWebSocket() {
+  console.log("Connecting to Websocket");
   return new Promise((resolve, reject) => {
     client = new WebSocket(socketUrl);
 
@@ -74,7 +75,7 @@ Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
       });
-
+      console.log("Connected");
       resolve();
     });
   });
@@ -438,7 +439,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                         `,
                       });
                       await claimBossChest(accountID);
-                      await delay(1000); //delay 3 second;
                       await startBot(acc); // Restart with the same account
                     }
                   })
