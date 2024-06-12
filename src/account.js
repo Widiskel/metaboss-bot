@@ -19,9 +19,9 @@ const account = [
     data: {
       id: 5703822759,
       username: "Widi Saputro",
-      hash: "040f200b89d5718252acc5e83885f98405abdb21ace2f72299a6ba4397a8aa37",
-      timeAuth: 1718172302,
-      data: 'query_id=AAGnbflTAgAAAKdt-VOMhjZV&user={"id":5703822759,"first_name":"Widi","last_name":"Saputro","username":"Wskel","language_code":"en","allows_write_to_pm":true}&auth_date=1718172302&hash=040f200b89d5718252acc5e83885f98405abdb21ace2f72299a6ba4397a8aa37',
+      hash: "ad3ba7eaa9d96ee181fcd48b084894fa9c8bf65f7ade76492b1a25af0c2540c4",
+      timeAuth: 1718218412,
+      data: 'query_id=AAGnbflTAgAAAKdt-VMo5HUq&user={"id":5703822759,"first_name":"Widi","last_name":"Saputro","username":"Wskel","language_code":"en","allows_write_to_pm":true}&auth_date=1718218412&hash=ad3ba7eaa9d96ee181fcd48b084894fa9c8bf65f7ade76492b1a25af0c2540c4',
     },
   }, //account 1
   {
@@ -30,22 +30,22 @@ const account = [
     data: {
       id: 6509592308,
       username: "W Skel",
-      hash: "a3b7191c1eb05178e4893deb7e34253fac794128b2597ea505fb380449e676c3",
-      timeAuth: 1718178461,
-      data: 'query_id=AAH0fgAEAwAAAPR-AAS2yCRT&user={"id":6509592308,"first_name":"W","last_name":"Skel","username":"widiskel","language_code":"en","allows_write_to_pm":true}&auth_date=1718178461&hash=a3b7191c1eb05178e4893deb7e34253fac794128b2597ea505fb380449e676c3',
+      hash: "63720e99f3b4ed9d7dc364ca6a8d6e3805c3d80c348897b64c946102a00c22a2",
+      timeAuth: 1718218461,
+      data: 'query_id=AAH0fgAEAwAAAPR-AARU28Lb&user={"id":6509592308,"first_name":"W","last_name":"Skel","username":"widiskel","language_code":"en","allows_write_to_pm":true}&auth_date=1718218461&hash=63720e99f3b4ed9d7dc364ca6a8d6e3805c3d80c348897b64c946102a00c22a2',
     },
   }, //account 2
-  // {
-  //   code: 1,
-  //   type: 2,
-  //   data: {
-  //     id: 7168500410,
-  //     username: "Cek Cek",
-  //     hash: "bfd52db2a09ce5a7fdecc965a99101776f35f0914441d717080862d07e5c2178",
-  //     timeAuth: 1717897859,
-  //     data: 'user={"id":7168500410,"first_name":"Cek","last_name":"Cek","username":"cekwidiskel","language_code":"en","allows_write_to_pm":true}&chat_instance=6510189447388663024&chat_type=sender&auth_date=1717897859&hash=bfd52db2a09ce5a7fdecc965a99101776f35f0914441d717080862d07e5c2178',
-  //   },
-  // }, //account 3
+  {
+    code: 1,
+    type: 2,
+    data: {
+      id: 7168500410,
+      username: "Cek Cek",
+      hash: "f8982ebad0fc51291869ad1fd4a0b6b8ad871488bf6a7de5d8016242bcfd8f5b",
+      timeAuth: 1718218542,
+      data: 'query_id=AAG6okYrAwAAALqiRiuxU-D9&user={"id":7168500410,"first_name":"Cek","last_name":"Cek","username":"cekwidiskel","language_code":"en","allows_write_to_pm":true}&auth_date=1718218542&hash=f8982ebad0fc51291869ad1fd4a0b6b8ad871488bf6a7de5d8016242bcfd8f5b',
+    },
+  }, //account 3
 ];
 
 export { account };

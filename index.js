@@ -154,7 +154,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
   return new Promise(async (resolve) => {
     await client.send(event.claimBossChest());
-    await client.once("message", (wsMsg) => {
+    await client.once("message", async (wsMsg) => {
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
@@ -189,7 +189,7 @@ Continue action
 
         resolve();
       } else {
-        claimBossChest(accountID).then(resolve());
+        await claimBossChest(accountID).then(resolve());
       }
     });
   });
@@ -198,7 +198,7 @@ Continue action
 async function startMining() {
   twisters.put(1, {
     text: `
-Status : Start mining Gold Mine
+Status : Start mining
 
 USER DATA 
 Username       : ${event.userData.name}
