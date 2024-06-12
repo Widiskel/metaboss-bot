@@ -378,7 +378,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                           " In cooldown for " +
                           millisecondsToHoursAndMinutes(event.bossInfo.remain)
                       );
-
+                      console.log();
                       // Update account status to true
                       accountList[idx][1] = true;
 
