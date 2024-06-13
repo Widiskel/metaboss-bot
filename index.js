@@ -274,8 +274,9 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
+      console.log(messages);
 
-      if (rc == 8 || rc == 10) {
+      if (rc == 8 || rc == 10 || rc == 11) {
         event.setBossInfo(data, attack);
 
         twisters.put(1, {
@@ -300,6 +301,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
           resolve();
         }
       } else {
+        console.log("Failed get bos info, unexpected response. Retrying .. ");
         getBossInfo(attack, msg).then(resolve);
       }
     });
