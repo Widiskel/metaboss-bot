@@ -10,7 +10,7 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 ## BOT Feature
 - Auto attack bos
 - Auto claim bos chest
-- Auto Start Mining (if unlocked)
+- Auto Start Mining (if unlocked) (RANDOM MINE) (Open Chest Manually)
 
 ## Register Metaboss Account
 
