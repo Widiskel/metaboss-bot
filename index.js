@@ -13,7 +13,7 @@ function random(min = 1, max = 3) {
 }
 
 async function initWebSocket() {
-  console.log("Connecting to Websocket");
+  console.log("-> Connecting to Websocket");
   return new Promise((resolve, reject) => {
     client = new WebSocket(socketUrl);
 
@@ -75,7 +75,7 @@ Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
       });
-      console.log("Connected");
+      console.log("-> Connected");
       resolve();
     });
   });
@@ -158,7 +158,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
         if (rc == 12) {
           console.log(
-            `Successfully claimed chest for Account ${accountID} got => ${
+            `-> Successfully claimed chest for Account ${accountID} got => ${
               data.number
             } ${data.type == 1 ? "MTB" : "TON"}`
           );
@@ -170,7 +170,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
           rc == 11 ||
           data.message == "Not enough this item !"
         ) {
-          console.log("All Boss chest claimed for account " + accountID);
+          console.log("-> All Boss chest claimed");
           twisters.put(1, {
             text: `
   Status : All Chest Claimed for Account ${accountID}
@@ -190,7 +190,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
           resolve();
         } else {
-          claimBossChest().then(resolve);
+          claimBossChest(accountID).then(resolve);
         }
       });
     });
@@ -225,17 +225,19 @@ async function startMining() {
       if (rc == 32) {
         if (data.timeRemaining != 0) {
           console.log(
-            `Mining already started for Account ${event.userData.id}`
+            `-> Mining already started for Account ${event.userData.id}`
           );
         } else {
           console.log(
-            `Successfully Start mining for Account ${event.userData.id}`
+            `-> Successfully Start mining for Account ${event.userData.id}`
           );
         }
       } else if (rc == 33) {
-        console.log(`Mining already started for Account ${event.userData.id}`);
+        console.log(
+          `-> Mining already started for Account ${event.userData.id}`
+        );
       } else {
-        console.log("Failed to start mining, Mining not unlocked");
+        console.log("-> Failed to start mining, Mining not unlocked");
       }
       event.setMiningData(data);
       resolve();
@@ -366,13 +368,14 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                       .then(async () => {
                         if (event.bossInfo.remain != 0) {
                           console.log(
-                            "Account " +
+                            "-> Account " +
                               accountID +
                               " In cooldown for " +
                               millisecondsToHoursAndMinutes(
                                 event.bossInfo.remain
                               )
                           );
+                          console.log();
                           console.log();
                           // Update account status to true
                           accountList[idx][1] = true;
@@ -441,7 +444,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                                           `,
                           });
 
-                          console.log("Claiming boss chest");
+                          console.log("-> Claiming boss chest");
                           await claimBossChest(accountID).then(async () => {
                             await startBot(acc); // Restart with the same account
                           });
