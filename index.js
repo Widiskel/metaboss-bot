@@ -446,7 +446,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
                           console.log("-> Claiming boss chest");
                           await claimBossChest(accountID).then(async () => {
-                            await startBot(acc); // Restart with the same account
+                            await startBot(acc).then(resolve); // Restart with the same account
                           });
                         }
                       })
@@ -466,16 +466,16 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
               });
           } else {
             console.log("ERROR - Socket Not Ready, Retrying");
-            await startBot(acc);
+            await startBot(acc).then(resolve);
           }
         })
         .catch(async (err) => {
           console.log("Web Socket error, retrying .. ");
-          await startBot(acc);
+          await startBot(acc).then(resolve);
         });
     } catch (error) {
       console.log("ERROR " + error + " , Retrying");
-      await startBot(acc);
+      await startBot(acc).then(resolve);
     }
   });
 }
