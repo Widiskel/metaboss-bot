@@ -451,8 +451,9 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
             await startBot(acc);
           }
         })
-        .catch((err) => {
-          throw err;
+        .catch(async (err) => {
+          console.log("Web Socket error, retrying .. ");
+          await startBot(acc);
         });
     } catch (error) {
       console.log("ERROR " + error + " , Retrying");
