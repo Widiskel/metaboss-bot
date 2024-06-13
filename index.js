@@ -301,7 +301,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
           resolve();
         }
       } else {
-        console.log("Failed get bos info, unexpected response. Retrying .. ");
         getBossInfo(attack, msg).then(resolve);
       }
     });
