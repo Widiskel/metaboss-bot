@@ -154,7 +154,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
         const messages = JSON.parse(wsMsg.toString("utf8"));
         const rc = messages.code;
         const data = messages.data;
-        console.log(messages);
+        // console.log(messages);
 
         if (rc == 12) {
           console.log(
@@ -190,7 +190,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
           resolve();
         } else {
-          resolve();
+          claimBossChest().then(resolve);
         }
       });
     });
@@ -440,7 +440,8 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                         Claiming Chest
                                           `,
                           });
-                          client.close();
+
+                          console.log("Claiming boss chest");
                           await claimBossChest(accountID).then(async () => {
                             await startBot(acc); // Restart with the same account
                           });
@@ -482,6 +483,7 @@ async function initBot() {
     console.log();
     console.log("Using Account " + acc[0].data.id);
     await startBot(acc);
+    client.close();
     console.log();
     await delay(1000);
   }
