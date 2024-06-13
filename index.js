@@ -154,7 +154,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
         const messages = JSON.parse(wsMsg.toString("utf8"));
         const rc = messages.code;
         const data = messages.data;
-        // console.log(messages);
+        console.log(messages);
 
         if (rc == 12) {
           console.log(
@@ -167,6 +167,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
         if (
           rc == 10 ||
           rc == 1000 ||
+          rc == 11 ||
           data.message == "Not enough this item !"
         ) {
           console.log("All Boss chest claimed for account " + accountID);
@@ -189,13 +190,12 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
           resolve();
         } else {
-          await claimBossChest(accountID).then(resolve());
+          resolve();
         }
       });
     });
   } catch (error) {
-    await initWebSocket();
-    await claimBossChest(accountID).then(resolve());
+    throw err;
   }
 }
 
@@ -440,8 +440,10 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                         Claiming Chest
                                           `,
                           });
-                          await claimBossChest(accountID);
-                          await startBot(acc); // Restart with the same account
+                          client.close();
+                          await claimBossChest(accountID).then(async () => {
+                            await startBot(acc); // Restart with the same account
+                          });
                         }
                       })
                       .catch((err) => {
@@ -483,6 +485,7 @@ async function initBot() {
     console.log();
     await delay(1000);
   }
+  client.close();
   twisters.put(1, {
     text: `
   Status : All accounts are in cooldown waiting for 5 Minutes
