@@ -22,7 +22,7 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 
 ## Set Up And Run
 
-- clone the project `git clone https://github.com/Widiskel/metaboss-bot.git`.
+- clone the project `git clone https://github.com/Widiskel/metaboss-bot.git`, or download from [RELEASE](https://github.com/Widiskel/metaboss-bot/releases)
 - run `cd metaboss-bot`.
 - run `npm install`.
 - run `cp src/account_tmp.js src/account.js`
