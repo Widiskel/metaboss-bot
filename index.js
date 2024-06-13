@@ -274,7 +274,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       const messages = JSON.parse(wsMsg.toString("utf8"));
       const rc = messages.code;
       const data = messages.data;
-      console.log(messages);
+      // console.log(messages);
 
       if (rc == 8 || rc == 10 || rc == 11) {
         event.setBossInfo(data, attack);
