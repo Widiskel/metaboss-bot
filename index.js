@@ -147,47 +147,56 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   `,
   });
 
-  return new Promise(async (resolve) => {
-    await client.send(event.claimBossChest());
-    await client.once("message", async (wsMsg) => {
-      const messages = JSON.parse(wsMsg.toString("utf8"));
-      const rc = messages.code;
-      const data = messages.data;
-      // console.log(messages);
+  try {
+    return new Promise(async (resolve) => {
+      await client.send(event.claimBossChest());
+      await client.once("message", async (wsMsg) => {
+        const messages = JSON.parse(wsMsg.toString("utf8"));
+        const rc = messages.code;
+        const data = messages.data;
+        // console.log(messages);
 
-      if (rc == 12) {
-        console.log(
-          `Successfully claimed chest for Account ${accountID} got => ${
-            data.number
-          } ${data.type == 1 ? "MTB" : "TON"}`
-        );
-      }
+        if (rc == 12) {
+          console.log(
+            `Successfully claimed chest for Account ${accountID} got => ${
+              data.number
+            } ${data.type == 1 ? "MTB" : "TON"}`
+          );
+        }
 
-      if (rc == 10 || rc == 1000 || data.message == "Not enough this item !") {
-        console.log("All Boss chest claimed for account " + accountID);
-        twisters.put(1, {
-          text: `
-Status : All Chest Claimed for Account ${accountID}
+        if (
+          rc == 10 ||
+          rc == 1000 ||
+          data.message == "Not enough this item !"
+        ) {
+          console.log("All Boss chest claimed for account " + accountID);
+          twisters.put(1, {
+            text: `
+  Status : All Chest Claimed for Account ${accountID}
+  
+  USER DATA 
+  Username       : ${event.userData.name}
+  Id             : ${event.userData.id}
+  Total Misison  : ${event.userData.mission.length}
+  
+  Boss Max HP    : ${event.bossInfo.maxHp}
+  Current HP     : ${event.bossInfo.currentHp}
+  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+  
+  Continue action
+          `,
+          });
 
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-
-Continue action
-        `,
-        });
-
-        resolve();
-      } else {
-        await claimBossChest(accountID).then(resolve());
-      }
+          resolve();
+        } else {
+          await claimBossChest(accountID).then(resolve());
+        }
+      });
     });
-  });
+  } catch (error) {
+    await initWebSocket();
+    await claimBossChest(accountID).then(resolve());
+  }
 }
 
 async function startMining() {
@@ -367,7 +376,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                           console.log();
                           // Update account status to true
                           accountList[idx][1] = true;
-                          await client.close();
                           resolve();
                         } else {
                           accountList[idx][1] = false;
@@ -437,14 +445,17 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                         }
                       })
                       .catch((err) => {
+                        console.log("Error during Get Bos Info");
                         throw err;
                       });
                   })
                   .catch((err) => {
+                    console.log("Error during Start Mining");
                     throw err;
                   });
               })
               .catch((err) => {
+                console.log("Error during Get User Info");
                 throw err;
               });
           } else {
