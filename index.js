@@ -81,6 +81,56 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
   });
 }
 
+async function getUserInfo(userData, accountID) {
+  twisters.put(1, {
+    text: `
+Status : Getting User Info Event
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+`,
+  });
+
+  return new Promise(async (resolve, reject) => {
+    await client.send(event.getUserInfo(userData));
+    await client.once("message", async (wsMsg) => {
+      const messages = JSON.parse(wsMsg.toString("utf8"));
+      const rc = messages.code;
+      const data = messages.data;
+      // console.log(messages);
+
+      if (rc == 2) {
+        twisters.put(1, {
+          text: `
+Status : Running on - Account ${accountID}
+
+USER DATA 
+Username       : ${data.name}
+Id             : ${data.id}
+Total Misison  : ${data.mission.length}
+
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+      `,
+        });
+
+        event.setUserData(data);
+        event.setMission(data.mission);
+        resolve();
+      } else {
+        reject(new Error("Received unexpected response" + data));
+      }
+    });
+  });
+}
+
 async function openChest(id) {
   return new Promise(async (resolve, reject) => {
     twisters.put(1, {
@@ -116,74 +166,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       }
     });
   });
-}
-
-async function claimBossChest(accountID) {
-  twisters.put(1, {
-    text: `
-Status : Getting Chess Info Event
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-  `,
-  });
-
-  try {
-    return new Promise(async (resolve) => {
-      await client.send(event.claimBossChest());
-      await client.once("message", async (wsMsg) => {
-        const messages = JSON.parse(wsMsg.toString("utf8"));
-        const rc = messages.code;
-        const data = messages.data;
-        // console.log(messages);
-
-        if (rc == 12) {
-          console.log(
-            `-> Successfully claimed chest for Account ${accountID} got => ${
-              data.number
-            } ${data.type == 1 ? "MTB" : "TON"}`
-          );
-        }
-
-        if (
-          rc == 10 ||
-          rc == 1000 ||
-          rc == 11 ||
-          data.message == "Not enough this item !"
-        ) {
-          console.log("-> All Boss chest claimed");
-          twisters.put(1, {
-            text: `
-  Status : All Chest Claimed for Account ${accountID}
-  
-  USER DATA 
-  Username       : ${event.userData.name}
-  Id             : ${event.userData.id}
-  Total Misison  : ${event.userData.mission.length}
-  
-  Boss Max HP    : ${event.bossInfo.maxHp}
-  Current HP     : ${event.bossInfo.currentHp}
-  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-  
-  Continue action
-          `,
-          });
-
-          resolve();
-        } else {
-          claimBossChest(accountID).then(resolve);
-        }
-      });
-    });
-  } catch (error) {
-    throw err;
-  }
 }
 
 async function claimBossChest(accountID) {
