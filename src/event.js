@@ -59,6 +59,13 @@ function claimBossChest() {
     data: { type: 10 },
   });
 }
+function claimChest(id) {
+  return JSON.stringify({
+    code: 1,
+    type: 11,
+    data: { type: id },
+  });
+}
 
 function getBossInfo() {
   return JSON.stringify({ code: 1, type: 7, data: {} });
@@ -69,6 +76,14 @@ function startMining(type) {
     type: 45,
     data: { mineType: type },
   });
+}
+
+function claimMission(id) {
+  return JSON.stringify({ code: 1, type: 15, data: { type: id } });
+}
+
+function completeMissions(id) {
+  return JSON.stringify({ code: 1, type: 50, data: { type: id } });
 }
 
 function attackBoss() {
@@ -89,4 +104,7 @@ export {
   setBossInfo,
   attackBoss,
   setMiningData,
+  completeMissions,
+  claimMission,
+  claimChest,
 };
