@@ -22,15 +22,6 @@ async function initWebSocket() {
       twisters.put(1, {
         text: `
 Status : Connecting to metaboss web socket
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
       });
 
@@ -45,15 +36,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       twisters.put(1, {
         text: `
 Status : Received ping from server
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
       });
 
@@ -64,18 +46,10 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       twisters.put(1, {
         text: `
 Status : Received pong from server
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
       });
       console.log("-> Connected");
+      twisters.remove(1);
       resolve();
     });
   });
@@ -91,6 +65,12 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
@@ -115,6 +95,12 @@ Username       : ${data.name}
 Id             : ${data.id}
 Total Misison  : ${data.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
@@ -135,59 +121,28 @@ async function openChest(id) {
   return new Promise(async (resolve, reject) => {
     twisters.put(1, {
       text: `
-Status : Opening Item on Bag
+Status : Opening Item id ${id} from Bag
 
 USER DATA 
 Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
     });
-    await client.send(event.claimChest(id));
-    await client.once("message", async (wsMsg) => {
-      const messages = JSON.parse(wsMsg.toString("utf8"));
-      const rc = messages.code;
-      const data = messages.data;
-      // console.log(messages);
 
-      if (rc == 12) {
-        console.log(
-          `-> Successfully claimed chest for Account ${
-            event.userData.id
-          } got => ${data.number} ${
-            data.type == 1 ? "MTB" : data.type == 2 ? "TON" : "NOT"
-          }`
-        );
-        resolve();
-      }
-    });
-  });
-}
-
-async function claimBossChest(accountID) {
-  twisters.put(1, {
-    text: `
-Status : Getting Chess Info Event
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-  `,
-  });
-
-  try {
-    return new Promise(async (resolve) => {
-      await client.send(event.claimBossChest());
-      await client.once("message", async (wsMsg) => {
+    try {
+      const handleRes = async (wsMsg) => {
         const messages = JSON.parse(wsMsg.toString("utf8"));
         const rc = messages.code;
         const data = messages.data;
@@ -195,49 +150,103 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
         if (rc == 12) {
           console.log(
-            `-> Successfully claimed chest for Account ${accountID} got => ${
-              data.number
-            } ${data.type == 1 ? "MTB" : "TON"}`
+            `-> Successfully Opening chest for Account ${
+              event.userData.id
+            } got => ${data.number} ${
+              data.type == 1 ? "MTB" : data.type == 2 ? "TON" : "NOT"
+            }`
           );
+          await client.off("message", handleRes);
+          resolve();
+        }
+      };
+      await client.send(event.claimChest(id));
+      await client.on("message", handleRes);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+async function claimBossChest() {
+  return new Promise(async (resolve, reject) => {
+    twisters.put(1, {
+      text: `
+Status : Getting Chess Info Event
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+    `,
+    });
+
+    try {
+      const handleRes = async (wsMsg) => {
+        const messages = JSON.parse(wsMsg.toString("utf8"));
+        const rc = messages.code;
+        const data = messages.data;
+        // console.log(messages);
+
+        if (rc == 12) {
+          console.log(
+            `-> Successfully claimed chest for Account ${
+              event.userData.id
+            } got => ${data.number} ${data.type == 1 ? "MTB" : "TON"}`
+          );
+          await client.off("message", handleRes);
+          resolve();
         }
 
-        if (
-          rc == 10 ||
-          rc == 1000 ||
-          rc == 11 ||
-          data.message == "Not enough this item !"
-        ) {
+        if (rc == 1000) {
           console.log("-> All Boss chest claimed");
           twisters.put(1, {
             text: `
-  Status : All Chest Claimed for Account ${accountID}
-  
-  USER DATA 
-  Username       : ${event.userData.name}
-  Id             : ${event.userData.id}
-  Total Misison  : ${event.userData.mission.length}
-  
-  Boss Max HP    : ${event.bossInfo.maxHp}
-  Current HP     : ${event.bossInfo.currentHp}
-  Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-  
-  Continue action
+Status : All Chest Claimed for Account ${event.userData.id}
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+
+Continue action
           `,
           });
 
+          await client.off("message", handleRes);
           resolve();
-        } else {
-          claimBossChest(accountID).then(resolve);
         }
-      });
-    });
-  } catch (error) {
-    throw err;
-  }
+      };
+      await client.send(event.claimBossChest());
+      await client.on("message", handleRes);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 async function startMining() {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     twisters.put(1, {
       text: `
 Status : Start mining
@@ -247,38 +256,54 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
         `,
     });
-    await client.send(event.startMining(random()));
-    await client.once("message", (wsMsg) => {
-      const messages = JSON.parse(wsMsg.toString("utf8"));
-      const rc = messages.code;
-      const data = messages.data;
-      // console.log(messages);
 
-      if (rc == 32) {
-        if (data.timeRemaining != 0) {
+    try {
+      const handleRes = async (wsMsg) => {
+        const messages = JSON.parse(wsMsg.toString("utf8"));
+        const rc = messages.code;
+        const data = messages.data;
+        // console.log(messages);
+
+        if (rc == 32) {
+          if (data.timeRemaining != 0) {
+            console.log(
+              `-> Mining already started for Account ${
+                event.userData.id
+              } until ${millisecondsToHoursAndMinutes(data.timeRemaining)}`
+            );
+          } else {
+            console.log(
+              `-> Successfully Start mining for Account ${event.userData.id}`
+            );
+          }
+        } else if (rc == 33) {
           console.log(
             `-> Mining already started for Account ${event.userData.id}`
           );
         } else {
-          console.log(
-            `-> Successfully Start mining for Account ${event.userData.id}`
-          );
+          console.log("-> Failed to start mining, Mining not unlocked");
         }
-      } else if (rc == 33) {
-        console.log(
-          `-> Mining already started for Account ${event.userData.id}`
-        );
-      } else {
-        console.log("-> Failed to start mining, Mining not unlocked");
-      }
-      event.setMiningData(data);
-      resolve();
-    });
+        event.setMiningData(data);
+        await client.off("message", handleRes);
+
+        resolve();
+      };
+      await client.send(event.startMining(random()));
+      await client.on("message", handleRes);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
@@ -294,6 +319,12 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
@@ -312,7 +343,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
             const messages = JSON.parse(wsMsg.toString("utf8"));
             const rc = messages.code;
             const data = messages.data;
-            console.log(messages);
+            // console.log(messages);
 
             if (rc == 19 || rc == 28) {
               const missionDetail = unCompleteMissions.find(
@@ -328,6 +359,12 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
@@ -339,7 +376,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                   const messages = JSON.parse(wsMsg.toString("utf8"));
                   const rc = messages.code;
                   const data = messages.data;
-                  console.log(messages);
+                  // console.log(messages);
 
                   if (rc == 19 || rc == 3 || rc == 12) {
                     twisters.put(1, {
@@ -351,6 +388,12 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
@@ -374,52 +417,18 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 }
 
 async function getBossInfo(attack = false, msg = "") {
-  return new Promise(async (resolve) => {
-    if (attack) {
-      twisters.put(1, {
-        text: `
-Status : Attacking ${msg}
+  return new Promise(async (resolve, reject) => {
+    try {
+      const handleRes = async (wsMsg) => {
+        const messages = JSON.parse(wsMsg.toString("utf8"));
+        const rc = messages.code;
+        const data = messages.data;
+        // console.log(messages);
 
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-    `,
-      });
-      await client.send(event.attackBoss());
-    } else {
-      await client.send(event.getBossInfo());
-      twisters.put(1, {
-        text: `
-Status : Getting Boss Info Event
-
-USER DATA 
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
-
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-    `,
-      });
-    }
-
-    await client.once("message", async (wsMsg) => {
-      const messages = JSON.parse(wsMsg.toString("utf8"));
-      const rc = messages.code;
-      const data = messages.data;
-      // console.log(messages);
-
-      if (rc == 8 || rc == 10 || rc == 11) {
-        event.setBossInfo(data, attack);
-
-        twisters.put(1, {
-          text: `
+        if (rc == 10 || rc == 8 || rc == 11) {
+          event.setBossInfo(data, rc);
+          twisters.put(1, {
+            text: `
 Status : ${attack ? `Attacking ${msg}` : "Getting Boss Info Event"}
 
 USER DATA 
@@ -427,22 +436,79 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${await millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-  
-      `,
-        });
+    
+        `,
+          });
 
-        if (attack) {
-          setTimeout(() => resolve(), 1500);
-        } else {
+          client.off("message", handleRes);
+          if (attack) {
+            setTimeout(() => resolve(), 1000);
+          } else {
+            resolve();
+          }
+        } else if (rc == 1000) {
+          client.off("message", handleRes);
           resolve();
         }
+      };
+      if (attack) {
+        twisters.put(1, {
+          text: `
+Status : Attacking ${msg}
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+      `,
+        });
+        await client.send(event.attackBoss());
       } else {
-        getBossInfo(attack, msg).then(resolve);
+        await client.send(event.getBossInfo());
+        twisters.put(1, {
+          text: `
+Status : Getting Boss Info Event
+
+USER DATA 
+Username       : ${event.userData.name}
+Id             : ${event.userData.id}
+Total Misison  : ${event.userData.mission.length}
+
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
+Boss Max HP    : ${event.bossInfo.maxHp}
+Current HP     : ${event.bossInfo.currentHp}
+Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+      `,
+        });
       }
-    });
+      await client.on("message", handleRes);
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
@@ -461,7 +527,7 @@ function millisecondsToHoursAndMinutes(milliseconds) {
 }
 
 async function startBot(acc) {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     const idx = accountList.indexOf(acc);
 
     twisters.put(1, {
@@ -473,6 +539,12 @@ Username       : ${event.userData.name}
 Id             : ${event.userData.id}
 Total Misison  : ${event.userData.mission.length}
 
+BALANCE
+MTB            : ${event.userData.coin}
+TON            : ${event.userData.ton}
+NOT            : ${event.userData.notCoin}
+
+BOSS INFO
 Boss Max HP    : ${event.bossInfo.maxHp}
 Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
@@ -486,26 +558,42 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
           if (client.readyState == WebSocket.OPEN) {
             await getUserInfo(userData, accountID)
               .then(async (_) => {
-                if (event.userData.name == undefined) {
-                  await startBot(acc);
-                }
                 await autoCompleteMissions()
                   .then(async () => {
+                    const availableResources = [];
+                    for (const [id, value] of Object.entries(
+                      event.userData.resource
+                    )) {
+                      if (value !== 0) {
+                        availableResources.push({ id, value });
+                      }
+                    }
+                    for (const res of availableResources) {
+                      for (let i = 0; i < res.value; i++) {
+                        try {
+                          await openChest(res.id);
+                        } catch (err) {
+                          throw err;
+                        }
+                      }
+                    }
+                    console.log(`-> All chest claimed`);
                     await startMining()
                       .then(async (_) => {
                         await getBossInfo(false)
                           .then(async () => {
                             if (event.bossInfo.remain != 0) {
+                              twisters.remove(1);
                               console.log(
                                 "-> Account " +
-                                  accountID +
+                                  event.userData.id +
                                   " In cooldown for " +
                                   millisecondsToHoursAndMinutes(
                                     event.bossInfo.remain
                                   )
                               );
                               console.log();
-                              console.log();
+
                               // Update account status to true
                               accountList[idx][1] = true;
                               resolve();
@@ -513,33 +601,39 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                               accountList[idx][1] = false;
                               twisters.put(1, {
                                 text: `
-Status : Boss Currently have ${event.bossInfo.currentHp} HP
+                    Status : Boss Currently have ${event.bossInfo.currentHp} HP
 
-USER DATA
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
+                    USER DATA
+                    Username       : ${event.userData.name}
+                    Id             : ${event.userData.id}
+                    Total Misison  : ${event.userData.mission.length}
 
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-Attacking for ${event.bossInfo.currentHp} Times
-                                          `,
+                    Boss Max HP    : ${event.bossInfo.maxHp}
+                    Current HP     : ${event.bossInfo.currentHp}
+                    Colldown       : ${millisecondsToHoursAndMinutes(
+                      event.bossInfo.remain
+                    )}
+                    Attacking for ${event.bossInfo.currentHp} Times
+                                                            `,
                               });
                               while (event.bossInfo.currentHp != 0) {
                                 twisters.put(1, {
                                   text: `
-Status : Attacking Bos - (${event.bossInfo.currentHp - 1} Left)
+                    Status : Attacking Bos - (${
+                      event.bossInfo.currentHp - 1
+                    } Left)
 
-USER DATA
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
+                    USER DATA
+                    Username       : ${event.userData.name}
+                    Id             : ${event.userData.id}
+                    Total Misison  : ${event.userData.mission.length}
 
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
-                                            `,
+                    Boss Max HP    : ${event.bossInfo.maxHp}
+                    Current HP     : ${event.bossInfo.currentHp}
+                    Colldown       : ${millisecondsToHoursAndMinutes(
+                      event.bossInfo.remain
+                    )}
+                                                              `,
                                 });
                                 await getBossInfo(
                                   true,
@@ -548,63 +642,66 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                               }
                               twisters.put(1, {
                                 text: `
-Status : Boss HP now ${event.bossInfo.currentHp} HP
+                    Status : Boss HP now ${event.bossInfo.currentHp} HP
 
-USER DATA
-Username       : ${event.userData.name}
-Id             : ${event.userData.id}
-Total Misison  : ${event.userData.mission.length}
+                    USER DATA
+                    Username       : ${event.userData.name}
+                    Id             : ${event.userData.id}
+                    Total Misison  : ${event.userData.mission.length}
 
-Boss Max HP    : ${event.bossInfo.maxHp}
-Current HP     : ${event.bossInfo.currentHp}
-Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
+                    Boss Max HP    : ${event.bossInfo.maxHp}
+                    Current HP     : ${event.bossInfo.currentHp}
+                    Colldown       : ${millisecondsToHoursAndMinutes(
+                      event.bossInfo.remain
+                    )}
 
-Claiming Chest
-                                          `,
+                    Claiming Chest
+                                                            `,
                               });
-
+                              twisters.remove(1);
                               console.log("-> Claiming boss chest");
-                              await claimBossChest(accountID).then(async () => {
-                                await startBot(acc).then(resolve); // Restart with the same account
+                              await claimBossChest().then(async () => {
+                                twisters.remove(1);
+                                await startBot(acc)
+                                  .then(resolve)
+                                  .catch((err) => reject(err));
                               });
                             }
                           })
                           .catch((err) => {
-                            console.log("Error during Get Bos Info");
                             throw err;
                           });
                       })
                       .catch((err) => {
-                        console.log("Error during Start Mining");
                         throw err;
                       });
                   })
-                  .catch(async () => {
-                    console.log("Error during complete missions");
+                  .catch(async (err) => {
                     throw err;
                   });
               })
               .catch((err) => {
-                console.log("Error during Get User Info");
                 throw err;
               });
           } else {
-            console.log("ERROR - Socket Not Ready, Retrying");
-            await startBot(acc).then(resolve);
+            throw err;
           }
         })
         .catch(async (err) => {
-          console.log("Web Socket error, retrying .. ");
-          await startBot(acc).then(resolve);
+          throw err;
         });
     } catch (error) {
+      twisters.remove(1);
       console.log("ERROR " + error + " , Retrying");
-      await startBot(acc).then(resolve);
+      await startBot(acc)
+        .then(resolve)
+        .catch((err) => reject(err));
     }
   });
 }
 
 async function initBot() {
+  twisters.remove(1);
   accountList = account.map((item) => [item, false]);
   for (const acc of accountList) {
     console.log();
@@ -614,7 +711,7 @@ async function initBot() {
     console.log();
     await delay(1000);
   }
-  client.close();
+  twisters.remove(1);
   twisters.put(1, {
     text: `
   Status : All accounts are in cooldown waiting for 5 Minutes

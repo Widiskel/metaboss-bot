@@ -11,9 +11,9 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 ## BOT Feature
 
 - Auto attack bos
-- Auto claim bos chest
 - Auto complete missions
-- Auto Start Mining (if unlocked) (RANDOM MINE) (Open Chest Manually)
+- Auto Start Mining (if unlocked) (RANDOM MINE)
+- Auto open item on bag (Boss Chest, Mission Reward Chest, Mining Reward)
 
 ## Register Metaboss Account
 
@@ -58,7 +58,7 @@ const account = [
   //node js v22
   {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}}, //account1
   {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}}, //account1
-  
+
   //if you use vscode and have prettier extension and enable format on save the json will automatically become like this
   {
     code: "X",

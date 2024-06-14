@@ -10,7 +10,11 @@ var bossInfo = {
 var userData = {
   name: undefined,
   id: undefined,
+  coin: 0,
+  ton: 0,
+  notCoin: 0,
   mission: [],
+  resource: [],
 };
 
 var miningData = {
@@ -32,19 +36,14 @@ function setMiningData(data) {
   miningData = data;
 }
 
-function setBossInfo(data, attack = false) {
-  if (attack) {
-    if (data.remain == 0 || data.remain == undefined) {
-      bossInfo.currentHp = data.hpBoss;
-    } else {
-      bossInfo.currentHp = 0;
-    }
-  } else {
-    if (data.remain == 0) {
-      bossInfo = data;
-    } else {
-      bossInfo = { maxHp: 100, currentHp: 0, remain: data.remain, type: 0 };
-    }
+function setBossInfo(data, code) {
+  if (code == 8) {
+    bossInfo = data;
+  } else if (code == 10) {
+    bossInfo.currentHp = data.hpBoss;
+    userData.coin = data.coin;
+  } else if (code == 11) {
+    bossInfo.remain = data.remain;
   }
 }
 function getUserInfo(userData) {
