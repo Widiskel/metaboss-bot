@@ -280,24 +280,24 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
             console.log(
               `-> Mining already started for Account ${
                 event.userData.id
-              } until ${millisecondsToHoursAndMinutes(data.timeRemaining)}`
+              }, Remaining ${millisecondsToHoursAndMinutes(data.timeRemaining)}`
             );
           } else {
             console.log(
               `-> Successfully Start mining for Account ${event.userData.id}`
             );
           }
-        } else if (rc == 33) {
-          console.log(
-            `-> Mining already started for Account ${event.userData.id}`
-          );
-        } else {
-          console.log("-> Failed to start mining, Mining not unlocked");
-        }
-        event.setMiningData(data);
-        await client.off("message", handleRes);
+          event.setMiningData(data);
+          await client.off("message", handleRes);
 
-        resolve();
+          resolve();
+        } else if (rc == 1000) {
+          console.log("-> Failed to start mining, Mining not unlocked");
+          event.setMiningData(data);
+          await client.off("message", handleRes);
+
+          resolve();
+        }
       };
       await client.send(event.startMining(random()));
       await client.on("message", handleRes);
