@@ -51,9 +51,13 @@ const account = [
   jsonTransformer(
     {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
   ), //account 1
+  jsonTransformer(
+    {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
+  ), //account 2
 
   //node js v22
-  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
+  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}}, //account1
+  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}}, //account1
   
   //if you use vscode and have prettier extension and enable format on save the json will automatically become like this
   {
@@ -66,7 +70,18 @@ const account = [
       timeAuth: "X",
       data: "query_id=...etc",
     },
-  }
+  } //account 1
+  {
+    code: "X",
+    type: "X",
+    data: {
+      id: "X",
+      username: "X",
+      hash: "X",
+      timeAuth: "X",
+      data: "query_id=...etc",
+    },
+  } //account 2
 ];
 ```
 
