@@ -43,10 +43,19 @@ Also read how to do inspect on your Operating system.
 7. Back to Developer Tools > Network tab > game socket You will see something like this
    ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/gamesocket.png)
 8. Copy the data that contains your account data
-9. Now open `account.js` and fill up your data using template data provided
+9. Now open `account.js` and fill up or paste your data using template data provided
 
 ```js
 const account = [
+  //node js v18
+  jsonTransformer(
+    {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
+  ), //account 1
+
+  //node js v22
+  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
+  
+  //if you use vscode and have prettier extension and enable format on save the json will automatically become like this
   {
     code: "X",
     type: "X",
@@ -55,9 +64,9 @@ const account = [
       username: "X",
       hash: "X",
       timeAuth: "X",
-      data: "user={"id":11111XXXXXXXX...etc",
+      data: "query_id=...etc",
     },
-  }, //account 1
+  }
 ];
 ```
 

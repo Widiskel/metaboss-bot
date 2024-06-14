@@ -1,11 +1,28 @@
 const account = [
-  jsonTransformer(), //account 1
-  jsonTransformer(), //account 2
+  //node js 18
+  jsonTransformer(
+    {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
+  ), //account 1
+
+  //node js 22
+  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
+  
+  //if you use vscode and have prettier extension and enable format on save the json will automatically become like this
+  {
+    code: "X",
+    type: "X",
+    data: {
+      id: "X",
+      username: "X",
+      hash: "X",
+      timeAuth: "X",
+      data: "query_id=...etc",
+    },
+  }
 ];
 
 
 function jsonTransformer(inputJson) {
-  // Definisikan variabel yang mewakili kunci
   const code = "code";
   const type = "type";
   const dataKey = "data";
@@ -15,7 +32,6 @@ function jsonTransformer(inputJson) {
   const timeAuth = "timeAuth";
   const data = "data";
 
-  // Buat objek baru dengan kunci variabel
   const transformedJson = {
     [code]: inputJson[code],
     [type]: inputJson[type],
