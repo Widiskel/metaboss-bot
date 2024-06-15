@@ -5,9 +5,9 @@ export class Config {
    * Black Gem - $NOT, $MTB, $TON
    * Gold Gem - $MTB, $NOT, $TON
    *
-   * miningType 1 = Gold Mine (MTB Dom)
+   * miningType 1 = Blue (TON Dom)
    * miningType 2 = Black Mine (NOT Dom)
-   * miningType 3 = Blue (TON Dom)
+   * miningType 3 = Gold Mine (MTB Dom)
    */
   static miningType = 2;
 }
