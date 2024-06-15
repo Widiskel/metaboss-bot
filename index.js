@@ -330,7 +330,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       });
 
       const unCompleteMissions = event.missions.filter(
-        (item) => !item.completed && item.id != 6
+        (item) => !item.completed && item.id != 6 && item.id != 4
       );
       const unCompleteMissionsIds = unCompleteMissions.map((item) => item.id);
       for (const missionId of unCompleteMissionsIds) {
