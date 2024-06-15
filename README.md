@@ -101,7 +101,7 @@ to configure or decide what mining you want to focused, look at `config.js` , ch
 
 ## Note
 
-The account data can be expired, because it have `hash` and `timeAuth`, so if your run the bot and your username and id is undefined or it stuck on some process (get user info, get boss info etc), you need to get new account data. follow the ## Set Up And Run from no 3
+The account data can be expired (query data livetime around 1-2 day), because it have `hash` and `timeAuth`, so if your run the bot and your username and id is undefined or it stuck on some process (get user info, get boss info etc), you need to get new account data. follow the ## Set Up And Run from no 3
 
 if any error happen please check [HERE](https://github.com/Widiskel/metaboss-bot)
 check the commit if any new commit, then update the bot.
