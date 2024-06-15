@@ -14,7 +14,7 @@ Meta boss auto attack boss bot, What is Metaboss ? Metaboss is tap tap game on t
 - Auto claim boss reward
 - Auto complete missions
 - Auto claim misisons reward
-- Auto Start Mining (if unlocked) (RANDOM MINE)
+- Auto Start Mining (if unlocked)
 - Auto open item on bag (Boss Chest, Mission Reward Chest, Mining Reward)
 
 ## Register Metaboss Account
@@ -88,6 +88,10 @@ const account = [
 ```
 
 10. Finnally run `npm run start`
+
+## Configure Mining
+
+to configure or decide what mining you want to focused, look at `config.js` , change the mine type with type you want, i'm already add description about mining priority on that file. If you not configure it, it will be use the Black Mine as default
 
 ## How To Update
 

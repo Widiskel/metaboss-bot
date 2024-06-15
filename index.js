@@ -2,15 +2,13 @@ import WebSocket from "ws";
 import * as event from "./src/event.js";
 import { account } from "./src/account.js";
 import { Twisters } from "twisters";
+import { Config } from "./config.js";
 
 const socketUrl = "wss://api.metaboss.xyz:2000/game";
 var client = new WebSocket(socketUrl);
 const twisters = new Twisters();
 
 client.setMaxListeners(0);
-function random(min = 1, max = 3) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 async function initWebSocket() {
   console.log("-> Connecting to Websocket");
@@ -299,7 +297,7 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
           resolve();
         }
       };
-      await client.send(event.startMining(random()));
+      await client.send(event.startMining(Config.miningType));
       await client.on("message", handleRes);
     } catch (error) {
       reject(error);
