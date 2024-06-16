@@ -4,7 +4,7 @@ import { account } from "./src/account.js";
 import { Twisters } from "twisters";
 import { Config } from "./config.js";
 
-const socketUrl = "wss://api.metaboss.xyz:2000/game";
+const socketUrl = "wss://apiv2.metaboss.xyz:2000/game";
 var client = new WebSocket(socketUrl);
 const twisters = new Twisters();
 
