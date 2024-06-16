@@ -5,15 +5,14 @@ import { Twisters } from "twisters";
 import { Config } from "./config.js";
 
 const socketUrl = "wss://apiv2.metaboss.xyz:2000/game";
-var client = new WebSocket(socketUrl);
+var client;
 const twisters = new Twisters();
-
-client.setMaxListeners(0);
 
 async function initWebSocket() {
   console.log("-> Connecting to Websocket");
   return new Promise((resolve, reject) => {
     client = new WebSocket(socketUrl);
+    client.setMaxListeners(0);
 
     client.on("open", () => {
       // console.log("");
