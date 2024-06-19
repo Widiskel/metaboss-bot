@@ -107,3 +107,16 @@ if any error happen please check [HERE](https://github.com/Widiskel/metaboss-bot
 check the commit if any new commit, then update the bot.
 
 remember to not open telegram metaboss game while the bot running cause it may cause bot freeze.
+
+## CONTRIBUTE
+
+Feel free to fork and contribute adding more feature thanks.
+
+## SUPPORT
+
+want to support me for creating another bot ?
+buy me a coffee on
+
+EVM : `0x0fd08d2d42ff086bf8c6d057d02d802bf217559a`
+
+SOLANA : `3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN`
