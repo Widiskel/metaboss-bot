@@ -54,17 +54,20 @@ function getUserInfo(userData) {
     return JSON.stringify(userData);
   } else {
     const data = Helper.teleQueryConvert(userData);
-    return JSON.stringify({
+    console.log(data);
+    const sendData = {
       code: 1,
       type: 2,
       data: {
         id: data.user.id,
-        username: data.username,
+        username: data.user.first_name + " " + data.user.last_name,
         hash: data.hash,
         timeAuth: data.auth_date,
-        data: data.userData,
+        data: userData,
       },
-    });
+    };
+    console.log(sendData);
+    return JSON.stringify(sendData);
   }
 }
 
