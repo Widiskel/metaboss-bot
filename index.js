@@ -527,7 +527,7 @@ function millisecondsToHoursAndMinutes(milliseconds) {
 async function startBot(acc) {
   return new Promise(async (resolve, reject) => {
     const idx = accountList.indexOf(acc);
-    console.log("Using Account " + idx + 1);
+    console.log("Using Account " + (idx+1));
 
     twisters.put(1, {
       text: `
