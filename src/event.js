@@ -54,7 +54,7 @@ function getUserInfo(userData) {
     return JSON.stringify(userData);
   } else {
     const data = Helper.teleQueryConvert(userData);
-    console.log(data);
+    // console.log(data);
     const sendData = {
       code: 1,
       type: 2,
@@ -66,7 +66,7 @@ function getUserInfo(userData) {
         data: userData,
       },
     };
-    console.log(sendData);
+    // console.log(sendData);
     return JSON.stringify(sendData);
   }
 }
