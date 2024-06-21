@@ -1,3 +1,5 @@
+import { Helper } from "./utils/helper.js";
+
 var missions = [];
 
 var bossInfo = {
@@ -48,7 +50,22 @@ function setBossInfo(data, code) {
 }
 function getUserInfo(userData) {
   // console.log(userData);
-  return JSON.stringify(userData);
+  if (userData.code) {
+    return JSON.stringify(userData);
+  } else {
+    const data = Helper.teleQueryConvert(userData);
+    return JSON.stringify({
+      code: 1,
+      type: 2,
+      data: {
+        id: data.user.id,
+        username: data.username,
+        hash: data.hash,
+        timeAuth: data.auth_date,
+        data: data.userData,
+      },
+    });
+  }
 }
 
 function claimBossChest() {

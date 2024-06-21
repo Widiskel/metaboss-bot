@@ -44,47 +44,44 @@ Also read how to do inspect on your Operating system.
 6. Now refresh the Metaboss Webview on your Telegram Desktop.
 7. Back to Developer Tools > Network tab > game socket You will see something like this
    ![image](https://github.com/Widiskel/metaboss-bot/blob/master/assets/gamesocket.png)
-8. Copy the data that contains your account data
+8. Copy the request that contains your account data, the data is seems like this
+
+```js
+{
+  code: 1,
+  type: 2,
+  data: {
+    id: 0,
+    username: "X",
+    hash: "X",
+    timeAuth: 0,
+    data: 'query=xx', //copy value inside data
+  },
+},
+```
+
+you can copy all of it, or just copy the data `query=xxx`. if you copy only the data `query=xxx` or `user=xxx` remember to wrap it with single quotes `'`.
+
 9. Now open `account.js` and fill up or paste your data using template data provided
 
 ```js
 const account = [
-  //node js v18
-  jsonTransformer(
-    {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
-  ), //account 1
-  jsonTransformer(
-    {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}},
-  ), //account 2
-
-  //node js v22
-  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}}, //account1
-  {"code":"X","type":"X","data":{"id":"X","username":"X","hash":"X","timeAuth":"X","data":"query_id=...etc"}}, //account1
-
-  //if you use vscode and have prettier extension and enable format on save the json will automatically become like this
+  "query_id=xxx",
   {
-    code: "X",
-    type: "X",
+    code: 1,
+    type: 2,
     data: {
-      id: "X",
+      id: 0,
       username: "X",
       hash: "X",
-      timeAuth: "X",
-      data: "query_id=...etc",
+      timeAuth: 0,
+      data: "query_id=xxx",
     },
-  } //account 1
-  {
-    code: "X",
-    type: "X",
-    data: {
-      id: "X",
-      username: "X",
-      hash: "X",
-      timeAuth: "X",
-      data: "query_id=...etc",
-    },
-  } //account 2
+  },
+  "user=xxx",
 ];
+
+export { account };
 ```
 
 10. Finnally run `npm run start`

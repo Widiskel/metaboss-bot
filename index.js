@@ -52,7 +52,7 @@ Status : Received pong from server
   });
 }
 
-async function getUserInfo(userData, accountID) {
+async function getUserInfo(userData) {
   twisters.put(1, {
     text: `
 Status : Getting User Info Event
@@ -83,9 +83,11 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       // console.log(messages);
 
       if (rc == 2) {
+        event.setUserData(data);
+        event.setMission(data.mission);
         twisters.put(1, {
           text: `
-Status : Running on - Account ${accountID}
+Status : Running on - Account ${event.userData.id}
 
 USER DATA 
 Username       : ${data.name}
@@ -104,8 +106,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
       `,
         });
 
-        event.setUserData(data);
-        event.setMission(data.mission);
         resolve();
       } else {
         reject(new Error("Received unexpected response" + data));
@@ -527,6 +527,7 @@ function millisecondsToHoursAndMinutes(milliseconds) {
 async function startBot(acc) {
   return new Promise(async (resolve, reject) => {
     const idx = accountList.indexOf(acc);
+    console.log("Using Account " + idx + 1);
 
     twisters.put(1, {
       text: `
@@ -548,57 +549,58 @@ Current HP     : ${event.bossInfo.currentHp}
 Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 `,
     });
-    try {
-      var userData = accountList[idx][0];
-      var accountID = accountList[idx][0].data.id;
-      await initWebSocket()
-        .then(async (_) => {
-          if (client.readyState == WebSocket.OPEN) {
-            await getUserInfo(userData, accountID)
-              .then(async (_) => {
-                await autoCompleteMissions()
-                  .then(async () => {
-                    const availableResources = [];
-                    for (const [id, value] of Object.entries(
-                      event.userData.resource
-                    )) {
-                      if (value !== 0) {
-                        availableResources.push({ id, value });
-                      }
-                    }
-                    for (const res of availableResources) {
-                      for (let i = 0; i < res.value; i++) {
-                        try {
-                          await openChest(res.id);
-                        } catch (err) {
-                          throw err;
-                        }
-                      }
-                    }
-                    console.log(`-> All chest claimed`);
-                    await startMining()
-                      .then(async (_) => {
-                        await getBossInfo(false)
-                          .then(async () => {
-                            if (event.bossInfo.remain != 0) {
-                              twisters.remove(1);
-                              console.log(
-                                "-> Account " +
-                                  event.userData.id +
-                                  " In cooldown for " +
-                                  millisecondsToHoursAndMinutes(
-                                    event.bossInfo.remain
-                                  )
-                              );
-                              console.log();
+    // try {
+    var userData = accountList[idx][0];
 
-                              // Update account status to true
-                              accountList[idx][1] = true;
-                              resolve();
-                            } else {
-                              accountList[idx][1] = false;
-                              twisters.put(1, {
-                                text: `
+    await initWebSocket()
+      .then(async (_) => {
+        if (client.readyState == WebSocket.OPEN) {
+          await getUserInfo(userData)
+            .then(async (_) => {
+              var accountID = event.userData.id;
+              await autoCompleteMissions()
+                .then(async () => {
+                  const availableResources = [];
+                  for (const [id, value] of Object.entries(
+                    event.userData.resource
+                  )) {
+                    if (value !== 0) {
+                      availableResources.push({ id, value });
+                    }
+                  }
+                  for (const res of availableResources) {
+                    for (let i = 0; i < res.value; i++) {
+                      try {
+                        await openChest(res.id);
+                      } catch (err) {
+                        throw err;
+                      }
+                    }
+                  }
+                  console.log(`-> All chest claimed`);
+                  await startMining()
+                    .then(async (_) => {
+                      await getBossInfo(false)
+                        .then(async () => {
+                          if (event.bossInfo.remain != 0) {
+                            twisters.remove(1);
+                            console.log(
+                              "-> Account " +
+                                event.userData.id +
+                                " In cooldown for " +
+                                millisecondsToHoursAndMinutes(
+                                  event.bossInfo.remain
+                                )
+                            );
+                            console.log();
+
+                            // Update account status to true
+                            accountList[idx][1] = true;
+                            resolve();
+                          } else {
+                            accountList[idx][1] = false;
+                            twisters.put(1, {
+                              text: `
                     Status : Boss Currently have ${event.bossInfo.currentHp} HP
 
                     USER DATA
@@ -613,10 +615,10 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                     )}
                     Attacking for ${event.bossInfo.currentHp} Times
                                                             `,
-                              });
-                              while (event.bossInfo.currentHp != 0) {
-                                twisters.put(1, {
-                                  text: `
+                            });
+                            while (event.bossInfo.currentHp != 0) {
+                              twisters.put(1, {
+                                text: `
                     Status : Attacking Bos - (${
                       event.bossInfo.currentHp - 1
                     } Left)
@@ -632,14 +634,14 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                       event.bossInfo.remain
                     )}
                                                               `,
-                                });
-                                await getBossInfo(
-                                  true,
-                                  `- (${event.bossInfo.currentHp - 1} Left)`
-                                );
-                              }
-                              twisters.put(1, {
-                                text: `
+                              });
+                              await getBossInfo(
+                                true,
+                                `- (${event.bossInfo.currentHp - 1} Left)`
+                              );
+                            }
+                            twisters.put(1, {
+                              text: `
                     Status : Boss HP now ${event.bossInfo.currentHp} HP
 
                     USER DATA
@@ -655,46 +657,46 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
 
                     Claiming Chest
                                                             `,
-                              });
+                            });
+                            twisters.remove(1);
+                            console.log("-> Claiming boss chest");
+                            await claimBossChest().then(async () => {
                               twisters.remove(1);
-                              console.log("-> Claiming boss chest");
-                              await claimBossChest().then(async () => {
-                                twisters.remove(1);
-                                await startBot(acc)
-                                  .then(resolve)
-                                  .catch((err) => reject(err));
-                              });
-                            }
-                          })
-                          .catch((err) => {
-                            throw err;
-                          });
-                      })
-                      .catch((err) => {
-                        throw err;
-                      });
-                  })
-                  .catch(async (err) => {
-                    throw err;
-                  });
-              })
-              .catch((err) => {
-                throw err;
-              });
-          } else {
-            throw err;
-          }
-        })
-        .catch(async (err) => {
+                              await startBot(acc)
+                                .then(resolve)
+                                .catch((err) => reject(err));
+                            });
+                          }
+                        })
+                        .catch((err) => {
+                          throw err;
+                        });
+                    })
+                    .catch((err) => {
+                      throw err;
+                    });
+                })
+                .catch(async (err) => {
+                  throw err;
+                });
+            })
+            .catch((err) => {
+              throw err;
+            });
+        } else {
           throw err;
-        });
-    } catch (error) {
-      twisters.remove(1);
-      console.log("ERROR " + error + " , Retrying");
-      await startBot(acc)
-        .then(resolve)
-        .catch((err) => reject(err));
-    }
+        }
+      })
+      .catch(async (err) => {
+        throw err;
+      });
+    // } catch (error) {
+    //   twisters.remove(1);
+    //   console.log("ERROR " + error + " , Retrying");
+    //   await startBot(acc)
+    //     .then(resolve)
+    //     .catch((err) => reject(err));
+    // }
   });
 }
 
@@ -703,7 +705,6 @@ async function initBot() {
   accountList = account.map((item) => [item, false]);
   for (const acc of accountList) {
     console.log();
-    console.log("Using Account " + acc[0].data.id);
     await startBot(acc);
     client.close();
     console.log();
