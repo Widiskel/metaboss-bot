@@ -617,24 +617,6 @@ Colldown       : ${millisecondsToHoursAndMinutes(event.bossInfo.remain)}
                                                             `,
                             });
                             while (event.bossInfo.currentHp != 0) {
-                              twisters.put(1, {
-                                text: `
-                    Status : Attacking Bos - (${
-                      event.bossInfo.currentHp - 1
-                    } Left)
-
-                    USER DATA
-                    Username       : ${event.userData.name}
-                    Id             : ${event.userData.id}
-                    Total Misison  : ${event.userData.mission.length}
-
-                    Boss Max HP    : ${event.bossInfo.maxHp}
-                    Current HP     : ${event.bossInfo.currentHp}
-                    Colldown       : ${millisecondsToHoursAndMinutes(
-                      event.bossInfo.remain
-                    )}
-                                                              `,
-                              });
                               await getBossInfo(
                                 true,
                                 `- (${event.bossInfo.currentHp - 1} Left)`
